@@ -1,45 +1,47 @@
 const mongoose = require("mongoose");
 
-const logEntrySchema = new Schema({
-  title: {
-    type: String,
-    required: true,
+const logEntrySchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    comments: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+      min: 0,
+      max: 10,
+      default: 5,
+    },
+    image: {
+      type: String,
+    },
+    latitude: {
+      type: Number,
+      required: true,
+      min: -90,
+      max: 90,
+    },
+    longitude: {
+      type: Number,
+      required: true,
+      min: -180,
+      max: 180,
+    },
+    visitDate: {
+      type: Date,
+      required: true,
+    },
   },
-  description: {
-    type: String,
-    required: true,
-  },
-  comments: {
-    type: String,
-    required: true,
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 10,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
-  latitude: {
-    type: Number,
-    required: true,
-  },
-  longitude: {
-    type: Number,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const LogEntry = mongoose.model("LogEntry", logEntrySchema);
 

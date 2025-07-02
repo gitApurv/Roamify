@@ -19,13 +19,8 @@ app.use(
     origin: process.env.CORS_ORIGIN,
   })
 );
-app.use(express.json());
 
-app.get("/", (req, res, next) => {
-  res.json({
-    message: "Hello World!",
-  });
-});
+app.use(express.json());
 
 app.use("/api/logs", logsRouter);
 app.use(middlewares.notFound);

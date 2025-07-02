@@ -9,12 +9,6 @@ const logEntrySchema = new mongoose.Schema(
     comments: {
       type: String,
     },
-    rating: {
-      type: Number,
-      min: 0,
-      max: 10,
-      default: 5,
-    },
     image: {
       type: String,
     },

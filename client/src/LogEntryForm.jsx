@@ -3,13 +3,16 @@ import { useForm } from "react-hook-form";
 import { createLogEntry } from "./api";
 import "./index.css";
 
-const LogEntryForm = ({ location, onClose }) => {
+const LogEntryForm = ({ location, onClose, loggedIn }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
 
   const handleLogEntry = async (data) => {
     try {
+      if (!loggedIn) {
+        throw new Error("Unauthorized: Please Login First");
+      }
       setLoading(true);
       data.latitude = location.latitude;
       data.longitude = location.longitude;

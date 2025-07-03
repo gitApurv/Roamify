@@ -30,7 +30,7 @@ body {
 .entry-form textarea,
 .entry-form button {
   font-size: 1rem;
-  margin: 0.5rem 0;
+  margin: 5px 0;
   display: block;
   width: 100%;
 }

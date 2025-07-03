@@ -217,6 +217,7 @@ function App() {
                 onClose={() => setAddEntryLocation(null)}
               >
                 <LogEntryForm
+                  loggedIn={loggedIn}
                   location={addEntryLocation}
                   onClose={() => {
                     setAddEntryLocation(null);

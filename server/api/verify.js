@@ -7,7 +7,6 @@ const verifyToken = (req, res, next) => {
       res.status(401);
       throw new Error("Unauthorized: No token provided");
     }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();

@@ -6,20 +6,20 @@ import Map, {
   NavigationControl,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { listLogEntries } from "./api";
 import LogEntryForm from "./LogEntryForm";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import "./index.css";
 import { logout } from "./api";
+import { listLogEntries } from "./api";
+import "./index.css";
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const [logEntries, setLogEntries] = useState([]);
   const [showPopup, setShowPopup] = useState({});
-  const [addEntryLocation, setAddEntryLocation] = useState({});
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignupForm, setShowSignupForm] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [addEntryLocation, setAddEntryLocation] = useState({});
 
   const getEntries = async () => {
     const logEntries = await listLogEntries();

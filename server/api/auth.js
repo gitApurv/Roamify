@@ -25,7 +25,6 @@ authRouter.post("/signup", async (req, res, next) => {
     }
 
     const userExists = await User.findOne({ email: email });
-
     if (userExists) {
       res.status(400);
       throw new Error("User already exists");
@@ -38,7 +37,6 @@ authRouter.post("/signup", async (req, res, next) => {
     };
 
     const user = await User.create(userData);
-
     if (user) {
       const id = user._id;
       const token = jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -67,15 +65,14 @@ authRouter.post("/signup", async (req, res, next) => {
 authRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email: email });
   try {
+    const user = await User.findOne({ email: email });
     if (!user) {
       res.status(401);
       throw new Error("User does not exists");
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
     if (!isPasswordCorrect) {
       res.status(400);
       throw new Error("Invalid Password");

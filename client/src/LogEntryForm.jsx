@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import "./index.css";
 import { createLogEntry } from "./api";
+import "./index.css";
 
 const LogEntryForm = ({ location, onClose }) => {
   const [loading, setLoading] = useState(false);

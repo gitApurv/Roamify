@@ -38,7 +38,9 @@ const LogEntryForm = ({ location, onClose, loggedIn }) => {
       data.append("file", image);
       data.append("upload_preset", "Roamify");
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dhzhsopzh/image/upload",
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_CLOUDINARY_CLOUD
+        }/image/upload`,
         {
           method: "POST",
           body: data,

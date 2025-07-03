@@ -28,6 +28,10 @@ const logEntrySchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

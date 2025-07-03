@@ -2,14 +2,20 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import "./index.css";
 
+import { loginUser } from "./api";
+
 const LoginForm = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     try {
       setLoading(true);
+      const response = await loginUser(data);
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
       onClose();
     } catch (err) {
       setError(err.message);

@@ -1,22 +1,26 @@
 const { Router } = require("express");
 const router = Router();
 
+const verifyToken = require("./verify");
 const LogEntry = require("../models/LogEntry");
 
-router.get("/", async (req, res, next) => {
+router.get("/get-logs", verifyToken, async (req, res, next) => {
   try {
-    const entries = await LogEntry.find();
+    const id = req.user.id;
+    const entries = await LogEntry.find({ user: id });
     res.json(entries);
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/create-logs", verifyToken, async (req, res, next) => {
   try {
-    const logEntry = new LogEntry(req.body);
-    const createdLogEntry = await logEntry.save();
-    res.json(createdLogEntry);
+    const id = req.user.id;
+    const log = req.body;
+    log.user = id;
+    await LogEntry.create(log);
+    res.json({ message: "Log Entry created successfully" });
   } catch (error) {
     if (error.name === "ValidationError") {
       res.status(422);

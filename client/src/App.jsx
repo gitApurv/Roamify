@@ -11,7 +11,7 @@ import LogEntryForm from "./LogEntryForm";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import "./index.css";
-import { set } from "react-hook-form";
+import { logout } from "./api";
 
 function App() {
   const [logEntries, setLogEntries] = useState([]);
@@ -19,7 +19,6 @@ function App() {
   const [addEntryLocation, setAddEntryLocation] = useState({});
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignupForm, setShowSignupForm] = useState(false);
-
   const [loggedIn, setLoggedIn] = useState(false);
 
   const getEntries = async () => {
@@ -28,8 +27,20 @@ function App() {
   };
 
   useEffect(() => {
-    getEntries();
+    fetch("http://localhost:8080/api/check", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setLoggedIn(data.loggedIn))
+      .catch((err) => {
+        setLoggedIn(false);
+      });
   }, []);
+
+  useEffect(() => {
+    if (loggedIn) getEntries();
+    else setLogEntries([]);
+  }, [loggedIn]);
 
   const showAddMarkerPopup = (event) => {
     const { lng, lat } = event.lngLat;
@@ -91,7 +102,10 @@ function App() {
               borderRadius: "4px",
               cursor: "pointer",
             }}
-            onClick={() => setLoggedIn(false)}
+            onClick={async () => {
+              await logout();
+              setLoggedIn(() => false);
+            }}
           >
             Logout
           </button>
@@ -229,8 +243,8 @@ function App() {
         >
           <LoginForm
             onClose={() => {
-              setShowLoginForm(() => false);
-              setLoggedIn(() => true);
+              setShowLoginForm(false);
+              setLoggedIn(true);
             }}
           />
         </div>
@@ -251,8 +265,8 @@ function App() {
         >
           <SignupForm
             onClose={() => {
-              setShowSignupForm(() => false);
-              setLoggedIn(() => true);
+              setShowSignupForm(false);
+              setLoggedIn(true);
             }}
           />
         </div>

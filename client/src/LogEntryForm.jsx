@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { createLogEntry } from "./api";
-
-import "./index.css";
-
 import { useForm } from "react-hook-form";
+import "./index.css";
+import { createLogEntry } from "./api";
 
 const LogEntryForm = ({ location, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = async (data) => {
+  const handleLogEntry = async (data) => {
     try {
       setLoading(true);
       data.latitude = location.latitude;
@@ -24,7 +22,7 @@ const LogEntryForm = ({ location, onClose }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="entry-form">
+    <form onSubmit={handleSubmit(handleLogEntry)} className="entry-form">
       {error && <h3 className="error">{error}</h3>}
       <label htmlFor="title">Title</label>
       <input type="text" name="title" required {...register("title")} />

@@ -2,7 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 const verifyToken = require("./verify");
-const LogEntry = require("../models/LogEntry");
+const LogEntry = require("../models/logEntry");
 
 router.get("/get-logs", verifyToken, async (req, res, next) => {
   try {

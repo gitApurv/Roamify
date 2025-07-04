@@ -45,7 +45,7 @@ authRouter.post("/signup", async (req, res, next) => {
       res.cookie("accessToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: "None",
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
@@ -86,7 +86,7 @@ authRouter.post("/login", async (req, res, next) => {
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "None",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
@@ -103,7 +103,7 @@ authRouter.get("/logout", async (req, res, next) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: "None",
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
   res.status(200).json({

@@ -27,7 +27,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_APP_BASE_URL}/api/check`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/check`, {
       credentials: "include",
     })
       .then((res) => res.json())

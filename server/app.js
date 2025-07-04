@@ -22,17 +22,12 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.static(path.join(__dirname, "client")));
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api", authRouter);
 app.use("/api", logsRouter);
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "index.html"));
-});
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

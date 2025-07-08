@@ -115,7 +115,7 @@ function App() {
         initialViewState={{
           longitude: 77.216721,
           latitude: 28.644800,
-          zoom: 5,
+          zoom: 10,
         }}
         style={{ width: "100vw", height: "100vh" }}
         mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${

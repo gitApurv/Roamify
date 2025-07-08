@@ -113,9 +113,9 @@ function App() {
       )}
       <Map
         initialViewState={{
-          longitude: 82.9739,
-          latitude: 25.3176,
-          zoom: 12,
+          longitude: 77.216721,
+          latitude: 28.644800,
+          zoom: 5,
         }}
         style={{ width: "100vw", height: "100vh" }}
         mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${

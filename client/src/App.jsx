@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Map, {
   Marker,
   Popup,
@@ -6,26 +6,32 @@ import Map, {
   NavigationControl,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import LogEntryForm from "./LogEntryForm";
+import RoomIcon from "@mui/icons-material/Room";
+import { Box } from "@mui/material";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import { logout } from "./api";
-import { listLogEntries } from "./api";
+import StyledPopup from "./StyledPopup";
+import LogEntryForm from "./LogEntryForm";
+import { listLogEntries, deleteLogEntry, logout } from "./api";
 import "./index.css";
+import LogEditForm from "./LogEditForm";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [logEntries, setLogEntries] = useState([]);
+  const [addEntryLocation, setAddEntryLocation] = useState({});
+  const [editEntry, setEditEntry] = useState({});
   const [showPopup, setShowPopup] = useState({});
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignupForm, setShowSignupForm] = useState(false);
-  const [addEntryLocation, setAddEntryLocation] = useState({});
 
+  // Function to load all Entries
   const getEntries = async () => {
     const logEntries = await listLogEntries();
     setLogEntries(logEntries);
   };
 
+  // Checking state of User
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/check`, {
       credentials: "include",
@@ -37,11 +43,24 @@ function App() {
       });
   }, []);
 
+  // Showing Entries according to User state
   useEffect(() => {
     if (loggedIn) getEntries();
     else setLogEntries([]);
   }, [loggedIn]);
 
+  // Edit handling function
+  const handleEdit = async (entry) => {
+    setEditEntry(entry);
+  };
+
+  // Delete handling function
+  const handleDelete = async (entry) => {
+    await deleteLogEntry(entry._id);
+    getEntries();
+  };
+
+  // Add new Entry handling function
   const showAddMarkerPopup = (event) => {
     const { lng, lat } = event.lngLat;
     setAddEntryLocation({
@@ -52,7 +71,8 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {!loggedIn && (
+      {/* Authentication Buttons  */}
+      {!loggedIn ? (
         <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
           <button
             style={{
@@ -89,8 +109,7 @@ function App() {
             Signup
           </button>
         </div>
-      )}
-      {loggedIn && (
+      ) : (
         <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
           <button
             style={{
@@ -111,54 +130,57 @@ function App() {
           </button>
         </div>
       )}
+
+      {/* Map Component  */}
       <Map
         initialViewState={{
-          longitude: 77.216721,
-          latitude: 28.644800,
-          zoom: 10,
+          longitude: 77.216721, //Initial Longitude
+          latitude: 28.6448, //Initial Latitude
+          zoom: 5, //Initial Zoom
         }}
-        style={{ width: "100vw", height: "100vh" }}
         mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${
           import.meta.env.VITE_MAPTILER_API_KEY
         }`}
         doubleClickZoom={false}
         onDblClick={showAddMarkerPopup}
       >
+        {/* Geolocate Control */}
         <GeolocateControl
           position="bottom-right"
           positionOptions={{
             enableHighAccuracy: true,
             trackUserLocation: true,
           }}
+          showAccuracyCircle={false}
         />
+
+        {/* Navigation Controls  */}
         <NavigationControl position="bottom-right" showCompass={false} />
 
+        {/* Showing all logEntries */}
         {logEntries.map((entry) => (
-          <React.Fragment key={entry._id}>
+          <Box key={entry._id}>
+            {/* Marker  */}
             <Marker
               longitude={entry.longitude}
               latitude={entry.latitude}
               anchor="bottom"
+              onClick={() => {
+                setShowPopup({
+                  [entry._id]: true,
+                });
+              }}
             >
-              <div
-                onClick={() => {
-                  setShowPopup({
-                    [entry._id]: true,
-                  });
+              <RoomIcon
+                style={{
+                  color: "red",
+                  height: "60px",
+                  width: "60px",
+                  cursor: "pointer",
                 }}
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
-                  alt="marker"
-                  style={{
-                    height: "30px",
-                    width: "30px",
-                    cursor: "pointer",
-                    transition: "width 0.2s, height 0.2s",
-                  }}
-                />
-              </div>
+              />
             </Marker>
+            {/* Popup */}
             {showPopup[entry._id] && (
               <Popup
                 latitude={entry.latitude}
@@ -171,42 +193,32 @@ function App() {
                   setShowPopup({});
                 }}
               >
-                <div>
-                  <h3>{entry.title}</h3>
-                  <p>{entry.comments}</p>
-                  <small>
-                    Visited on: {new Date(entry.visitDate).toLocaleDateString()}
-                  </small>
-                  {entry.image && (
-                    <img
-                      src={entry.image}
-                      alt={entry.title}
-                      style={{
-                        width: "100%",
-                        maxHeight: "150px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  )}
-                </div>
+                <StyledPopup
+                  entry={entry}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
               </Popup>
             )}
-          </React.Fragment>
+          </Box>
         ))}
+
+        {/* Add Entry Popup  */}
         {Number.isFinite(addEntryLocation?.latitude) &&
           Number.isFinite(addEntryLocation?.longitude) && (
-            <>
+            <Box>
               <Marker
                 latitude={addEntryLocation.latitude}
                 longitude={addEntryLocation.longitude}
               >
-                <div className="popup">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
-                    alt="marker"
-                    style={{ height: "30px", width: "30px" }}
-                  />
-                </div>
+                <RoomIcon
+                  style={{
+                    color: "red",
+                    height: "60px",
+                    width: "60px",
+                    cursor: "pointer",
+                  }}
+                />
               </Marker>
               <Popup
                 latitude={addEntryLocation.latitude}
@@ -225,9 +237,49 @@ function App() {
                   }}
                 />
               </Popup>
-            </>
+            </Box>
+          )}
+
+        {/* Edit Entry Popup  */}
+        {Number.isFinite(editEntry?.latitude) &&
+          Number.isFinite(editEntry?.longitude) && (
+            <Box>
+              <Marker
+                latitude={editEntry.latitude}
+                longitude={editEntry.longitude}
+              >
+                <RoomIcon
+                  style={{
+                    color: "red",
+                    height: "60px",
+                    width: "60px",
+                    cursor: "pointer",
+                  }}
+                />
+              </Marker>
+              <Popup
+                latitude={editEntry.latitude}
+                longitude={editEntry.longitude}
+                anchor="bottom"
+                closeButton={true}
+                closeOnClick={false}
+                onClose={() => {
+                  setEditEntry(null);
+                }}
+              >
+                <LogEditForm
+                  entry={editEntry}
+                  onClose={() => {
+                    setEditEntry(null);
+                    getEntries();
+                  }}
+                />
+              </Popup>
+            </Box>
           )}
       </Map>
+
+      {/* Login Form  */}
       {showLoginForm && (
         <div
           style={{
@@ -250,17 +302,19 @@ function App() {
           />
         </div>
       )}
+
+      {/* Signup Form  */}
       {showSignupForm && (
-        <div
-          style={{
+        <Box
+          sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform: "translate(-50%, -50%)",
             zIndex: 10,
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            padding: "20px",
-            borderRadius: "10px",
+            backgroundColor: "rgba(255,255,255,0.95)",
+            padding: 2,
+            borderRadius: 2,
+            transform: "translate(-50%,-50%)",
             boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}
         >
@@ -270,7 +324,7 @@ function App() {
               setLoggedIn(true);
             }}
           />
-        </div>
+        </Box>
       )}
     </div>
   );

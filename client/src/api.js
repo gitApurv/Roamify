@@ -18,13 +18,32 @@ export async function listLogEntries() {
 }
 
 export async function createLogEntry(entry) {
-  const response = await fetch(`${API_URL}/create-logs`, {
+  const response = await fetch(`${API_URL}/create-log`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(entry),
+  });
+  return response.json();
+}
+
+export async function createLogEdit(id, entry) {
+  const response = await fetch(`${API_URL}/edit-log/${id}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(entry),
+  });
+  return response.json();
+}
+
+export async function deleteLogEntry(logEntryId) {
+  const response = await fetch(`${API_URL}/delete-log/${logEntryId}`, {
+    credentials: "include",
   });
   return response.json();
 }

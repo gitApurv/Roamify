@@ -1,7 +1,12 @@
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import "./index.css";
-
 import { loginUser } from "./api";
 
 const LoginForm = ({ onClose }) => {
@@ -10,8 +15,8 @@ const LoginForm = ({ onClose }) => {
   const { register, handleSubmit } = useForm();
 
   const handleLogin = async (data) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await loginUser(data);
       if (!response.ok) {
         throw new Error(response.message);
@@ -19,18 +24,53 @@ const LoginForm = ({ onClose }) => {
       onClose();
     } catch (err) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
+
   return (
-    <form onSubmit={handleSubmit(handleLogin)} className="entry-form">
-      {error && <h3 className="error">{error}</h3>}{" "}
-      <label htmlFor="email">Email:</label>
-      <input type="email" name="email" {...register("email")} />
-      <label htmlFor="password">Password:</label>
-      <input type="password" name="password" {...register("password")} />
-      <button disabled={loading}>{loading ? "Loading.." : "Login"}</button>
-    </form>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleLogin)}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        p: 2,
+      }}
+    >
+      {error && (
+        <Typography variant="h6" color="error">
+          {error}
+        </Typography>
+      )}
+
+      <TextField
+        label="Email"
+        type="email"
+        variant="outlined"
+        {...register("email")}
+        required
+      />
+
+      <TextField
+        label="Password"
+        type="password"
+        variant="outlined"
+        {...register("password")}
+        required
+      />
+
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+      >
+        {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+      </Button>
+    </Box>
   );
 };
 

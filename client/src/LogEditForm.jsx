@@ -7,12 +7,15 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { createLogEntry } from "./api";
+import { createLogEdit } from "./api";
 
-const LogEntryForm = ({ location, onClose, loggedIn }) => {
+const LogEditForm = ({ entry, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { register, setValue, handleSubmit } = useForm();
+  setValue("title", entry.title);
+  setValue("comments", entry.comments);
+  setValue("visitDate", entry.visitDate.split("T")[0]);
 
   const handleImageUpload = async (image) => {
     setLoading(true);
@@ -66,18 +69,12 @@ const LogEntryForm = ({ location, onClose, loggedIn }) => {
     }
   };
 
-  const handleLogEntry = async (data) => {
+  const handleLogEdit = async (data) => {
     setLoading(true);
     try {
-      if (!loggedIn) {
-        throw new Error("Unauthorized: Please Login First");
-      }
-      if (!data.image) {
-        throw new Error("Please select an Image");
-      }
-      data.latitude = location.latitude;
-      data.longitude = location.longitude;
-      await createLogEntry(data);
+      data.latitude = entry.latitude;
+      data.longitude = entry.longitude;
+      await createLogEdit(entry._id, data);
       onClose();
     } catch (error) {
       setError(error.message);
@@ -89,7 +86,7 @@ const LogEntryForm = ({ location, onClose, loggedIn }) => {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(handleLogEntry)}
+      onSubmit={handleSubmit(handleLogEdit)}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -98,7 +95,7 @@ const LogEntryForm = ({ location, onClose, loggedIn }) => {
       }}
     >
       {error && (
-        <Typography variant="h6" color="error" fontWeight="bold" mb={1}>
+        <Typography variant="h6" color="error">
           {error}
         </Typography>
       )}
@@ -156,4 +153,4 @@ const LogEntryForm = ({ location, onClose, loggedIn }) => {
   );
 };
 
-export default LogEntryForm;
+export default LogEditForm;

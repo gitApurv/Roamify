@@ -1,3 +1,10 @@
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import "./index.css";
@@ -10,8 +17,8 @@ const SignupForm = ({ onClose }) => {
   const { register, handleSubmit } = useForm();
 
   const handleSignup = async (data) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await signupUser(data);
       if (!response.ok) {
         throw new Error(response.message);
@@ -19,18 +26,52 @@ const SignupForm = ({ onClose }) => {
       onClose();
     } catch (err) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
   return (
-    <form onSubmit={handleSubmit(handleSignup)} className="entry-form">
-      {error && <h3 className="error">{error}</h3>}
-      <label htmlFor="email">Email:</label>
-      <input type="email" name="email" {...register("email")} />
-      <label htmlFor="password">Password:</label>
-      <input type="password" name="password" {...register("password")} />
-      <button disabled={loading}>{loading ? "Loading.." : "Sign Up"}</button>
-    </form>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleSignup)}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        p: 2,
+      }}
+    >
+      {error && (
+        <Typography variant="h6" color="error">
+          {error}
+        </Typography>
+      )}
+
+      <TextField
+        label="Email"
+        type="email"
+        variant="outlined"
+        {...register("email")}
+        required
+      />
+
+      <TextField
+        label="Password"
+        type="password"
+        variant="outlined"
+        {...register("password")}
+        required
+      />
+
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+      >
+        {loading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
+      </Button>
+    </Box>
   );
 };
 

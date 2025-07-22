@@ -2,13 +2,14 @@ import {
   Box,
   Button,
   CircularProgress,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import PasswordIcon from "@mui/icons-material/Password";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import "./index.css";
-
 import { signupUser } from "./api";
 
 const SignupForm = ({ onClose }) => {
@@ -53,6 +54,13 @@ const SignupForm = ({ onClose }) => {
         variant="outlined"
         {...register("email")}
         required
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <MailOutlineIcon color="primary" />
+            </InputAdornment>
+          ),
+        }}
       />
 
       <TextField
@@ -61,6 +69,13 @@ const SignupForm = ({ onClose }) => {
         variant="outlined"
         {...register("password")}
         required
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PasswordIcon color="primary" />
+            </InputAdornment>
+          ),
+        }}
       />
 
       <Button

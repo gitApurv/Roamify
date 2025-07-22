@@ -9,7 +9,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import GeocoderControl from "./GeocoderControl";
 import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import RoomIcon from "@mui/icons-material/Room";
-import { Box } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Box, Button, Menu, MenuItem, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import StyledPopup from "./StyledPopup";
@@ -24,6 +25,7 @@ function App() {
   const [addEntryLocation, setAddEntryLocation] = useState({});
   const [editEntry, setEditEntry] = useState({});
   const [showPopup, setShowPopup] = useState({});
+  const [anchorEl, setAnchorEl] = useState(null);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignupForm, setShowSignupForm] = useState(false);
 
@@ -71,67 +73,68 @@ function App() {
     });
   };
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {/* Authentication Buttons  */}
-      {!loggedIn ? (
-        <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
-          <button
-            style={{
-              margin: "5px",
-              padding: "8px 16px",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setShowSignupForm(() => false);
-              setShowLoginForm((prev) => !prev);
-            }}
-          >
-            Login
-          </button>
-          <button
-            style={{
-              margin: "5px",
-              padding: "8px 16px",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setShowSignupForm((prev) => !prev);
-              setShowLoginForm(() => false);
-            }}
-          >
-            Signup
-          </button>
-        </div>
-      ) : (
-        <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
-          <button
-            style={{
-              margin: "5px",
-              padding: "8px 16px",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-            onClick={async () => {
-              await logout();
-              setLoggedIn(() => false);
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      )}
+      {/* Authentication Menu  */}
+      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
+        <Button
+          id="basic-button"
+          aria-controls={Boolean(anchorEl) ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={Boolean(anchorEl) ? "true" : undefined}
+          onClick={handleClick}
+          sx={{ pb: 2 }}
+        >
+          <AccountCircleIcon sx={{ fontSize: 32 }} />
+        </Button>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          {!loggedIn ? (
+            <>
+              <MenuItem
+                onClick={() => {
+                  setShowSignupForm(false);
+                  setShowLoginForm((prev) => !prev);
+                  setAnchorEl(null);
+                }}
+              >
+                Login
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setShowSignupForm((prev) => !prev);
+                  setShowLoginForm(false);
+                  setAnchorEl(null);
+                }}
+              >
+                Signup
+              </MenuItem>
+            </>
+          ) : (
+            <MenuItem
+              onClick={async () => {
+                await logout();
+                setLoggedIn(false);
+                setAnchorEl(null);
+              }}
+            >
+              Logout
+            </MenuItem>
+          )}
+        </Menu>
+      </div>
 
       {/* Map Component  */}
       <Map
@@ -286,26 +289,42 @@ function App() {
 
       {/* Login Form  */}
       {showLoginForm && (
-        <div
-          style={{
+        <Box
+          sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 10,
             backgroundColor: "rgba(255, 255, 255, 0.95)",
-            padding: "20px",
-            borderRadius: "10px",
+            padding: 2,
+            borderRadius: 2,
             boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}
         >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              color="primary"
+              sx={{ fontWeight: "bold" }}
+              gutterBottom
+            >
+              Login
+            </Typography>
+          </Box>
           <LoginForm
             onClose={() => {
               setShowLoginForm(false);
               setLoggedIn(true);
             }}
           />
-        </div>
+        </Box>
       )}
 
       {/* Signup Form  */}
@@ -315,14 +334,30 @@ function App() {
             position: "absolute",
             top: "50%",
             left: "50%",
+            transform: "translate(-50%, -50%)",
             zIndex: 10,
             backgroundColor: "rgba(255,255,255,0.95)",
             padding: 2,
             borderRadius: 2,
-            transform: "translate(-50%,-50%)",
             boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}
         >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              color="primary"
+              sx={{ fontWeight: "bold" }}
+              gutterBottom
+            >
+              SignUp
+            </Typography>
+          </Box>
           <SignupForm
             onClose={() => {
               setShowSignupForm(false);

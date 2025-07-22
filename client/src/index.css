@@ -11,6 +11,6 @@ body {
 
 @media (max-width: 768px) {
   .maplibregl-ctrl-geocoder {
-    width: 70vw !important;
+    width: 75vw !important;
   }
 }

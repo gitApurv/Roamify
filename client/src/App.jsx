@@ -6,15 +6,17 @@ import Map, {
   NavigationControl,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import GeocoderControl from "./GeocoderControl";
+import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import RoomIcon from "@mui/icons-material/Room";
 import { Box } from "@mui/material";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import StyledPopup from "./StyledPopup";
 import LogEntryForm from "./LogEntryForm";
+import LogEditForm from "./LogEditForm";
 import { listLogEntries, deleteLogEntry, logout } from "./api";
 import "./index.css";
-import LogEditForm from "./LogEditForm";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -144,6 +146,9 @@ function App() {
         doubleClickZoom={false}
         onDblClick={showAddMarkerPopup}
       >
+        {/* Geocoding Control */}
+        <GeocoderControl position="top-left" />
+
         {/* Geolocate Control */}
         <GeolocateControl
           position="bottom-right"

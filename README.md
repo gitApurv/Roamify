@@ -56,19 +56,19 @@ Make sure you have the following installed on your machine:
 
 1.  **Clone the repository:**
     ```sh
-    git clone [https://github.com/your-username/roamify.git](https://github.com/your-username/roamify.git)
-    cd roamify
+    git clone https://github.com/gitApurv/Roamify.git
+    cd Roamify
     ```
 
 2.  **Configure Environment Variables:**
-    -   In the `/backend` directory, create a `.env` file with your credentials:
+    -   In the `/server` directory, create a `.env` file with your credentials:
         ```env
         PORT=8080
         MONGO_URI=your_mongodb_connection_string
         CORS_ORIGIN=http://localhost:5173
         JWT_SECRET=your_super_secret_key
         ```
-    -   In the `/frontend` directory, create a `.env` file with your credentials:
+    -   In the `/client` directory, create a `.env` file with your credentials:
         ```env
         VITE_API_BASE_URL=http://localhost:8080/
         VITE_MAPTILER_API_KEY=your_maptiler_api_key

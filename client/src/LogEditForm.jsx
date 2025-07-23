@@ -146,7 +146,7 @@ const LogEditForm = ({ entry, onClose }) => {
         {loading ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          "Create Entry"
+          "Edit Entry"
         )}
       </Button>
     </Box>

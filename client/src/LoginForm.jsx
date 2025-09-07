@@ -5,9 +5,10 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PasswordIcon from "@mui/icons-material/Password";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { loginUser } from "./api";
@@ -15,14 +16,16 @@ import { loginUser } from "./api";
 const LoginForm = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const { register, handleSubmit } = useForm();
 
   const handleLogin = async (data) => {
+    setError("");
     setLoading(true);
     try {
       const response = await loginUser(data);
       if (!response.ok) {
-        throw new Error(response.message);
+        throw new Error(response.message || "Invalid credentials");
       }
       onClose();
     } catch (err) {
@@ -40,14 +43,10 @@ const LoginForm = ({ onClose }) => {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        p: 2,
+        p: 1,
       }}
     >
-      {error && (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      )}
+      {error && <Alert severity="error">{error}</Alert>}
 
       <TextField
         label="Email"
@@ -73,7 +72,7 @@ const LoginForm = ({ onClose }) => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <PasswordIcon color="primary" />
+              <LockOutlinedIcon color="primary" />
             </InputAdornment>
           ),
         }}

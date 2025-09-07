@@ -4,6 +4,7 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,40 +13,42 @@ import { createLogEdit } from "./api";
 const LogEditForm = ({ entry, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { register, setValue, handleSubmit } = useForm();
-  setValue("title", entry.title);
-  setValue("comments", entry.comments);
-  setValue("visitDate", entry.visitDate.split("T")[0]);
+
+  const { register, setValue, handleSubmit, watch } = useForm({
+    defaultValues: {
+      title: entry?.title || "",
+      comments: entry?.comments || "",
+      visitDate: entry?.visitDate ? entry.visitDate.split("T")[0] : "",
+      image: entry?.image || "",
+    },
+  });
+
+  const imageUrl = watch("image");
 
   const handleImageUpload = async (image) => {
-    setLoading(true);
+    setError("");
 
-    if (image == undefined) {
+    if (!image) {
       setError("Please select an Image");
-      setLoading(false);
       return;
     }
 
-    if (image.size > 1024 * 1024 * 10) {
+    if (image.size > 10 * 1024 * 1024) {
       setError("Image size must be less than 10MB");
-      setLoading(false);
       return;
     }
 
-    if (
-      image.type !== "image/jpeg" &&
-      image.type !== "image/png" &&
-      image.type !== "image/jpg"
-    ) {
+    if (!["image/jpeg", "image/png", "image/jpg"].includes(image.type)) {
       setError("Image must be a JPEG, PNG or JPG");
-      setLoading(false);
       return;
     }
 
     try {
+      setLoading(true);
       const data = new FormData();
       data.append("file", image);
       data.append("upload_preset", "Roamify");
+
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${
           import.meta.env.VITE_CLOUDINARY_CLOUD
@@ -59,9 +62,7 @@ const LogEditForm = ({ entry, onClose }) => {
       if (!res.ok) throw new Error();
 
       const jsonRes = await res.json();
-      const url = jsonRes.secure_url;
-      console.log(url);
-      setValue("image", url);
+      setValue("image", jsonRes.secure_url);
     } catch (err) {
       setError("Error uploading Image");
     } finally {
@@ -77,7 +78,7 @@ const LogEditForm = ({ entry, onClose }) => {
       await createLogEdit(entry._id, data);
       onClose();
     } catch (error) {
-      setError(error.message);
+      setError(error.message || "Error updating entry");
     } finally {
       setLoading(false);
     }
@@ -88,53 +89,75 @@ const LogEditForm = ({ entry, onClose }) => {
       component="form"
       onSubmit={handleSubmit(handleLogEdit)}
       sx={{
+        maxWidth: 320,
+        maxHeight: 400,
+        overflowY: "auto",
+        p: 1,
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        p: 2,
       }}
     >
-      {error && (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      )}
+      <Typography variant="h5" fontWeight="bold" gutterBottom color="primary">
+        Edit Travel Log
+      </Typography>
+
+      {error && <Alert severity="error">{error}</Alert>}
 
       <TextField
         label="Title"
         {...register("title")}
         required
         variant="outlined"
+        fullWidth
       />
 
       <TextField
         label="Comments"
         {...register("comments")}
         multiline
-        rows={3}
+        rows={2}
         required
         variant="outlined"
+        disabled={loading}
+        fullWidth
       />
 
-      <Button variant="outlined" component="label">
-        Upload Image
-        <input
-          type="file"
-          accept="image/*"
-          hidden
-          onChange={(e) => handleImageUpload(e.target.files[0])}
-        />
-      </Button>
+      <Box>
+        {imageUrl && (
+          <Box
+            component="img"
+            src={imageUrl}
+            alt="Uploaded Image"
+            sx={{
+              width: "100%",
+              maxHeight: 200,
+              objectFit: "cover",
+              borderRadius: 2,
+              boxShadow: 1,
+            }}
+          />
+        )}
+        <Button variant="outlined" component="label" disabled={loading}>
+          Upload Image
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(e) => handleImageUpload(e.target.files[0])}
+          />
+        </Button>
+      </Box>
 
       <TextField
         label="Visit Date"
         type="date"
         {...register("visitDate")}
         required
-        InputLabelProps={{
-          shrink: true,
-        }}
+        InputLabelProps={{ shrink: true }}
         variant="outlined"
+        disabled={loading}
+        fullWidth
       />
 
       <Button
@@ -142,11 +165,12 @@ const LogEditForm = ({ entry, onClose }) => {
         variant="contained"
         color="primary"
         disabled={loading}
+        sx={{ py: 1.2, fontWeight: "bold", textTransform: "none" }}
       >
         {loading ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          "Edit Entry"
+          "Save Changes"
         )}
       </Button>
     </Box>

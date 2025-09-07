@@ -10,7 +10,8 @@ import GeocoderControl from "./GeocoderControl";
 import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import RoomIcon from "@mui/icons-material/Room";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Box, Button, Menu, MenuItem, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import StyledPopup from "./StyledPopup";
@@ -83,27 +84,29 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {/* Authentication Menu  */}
-      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}>
-        <Button
+      {/* Authentication Menu */}
+      <Box sx={{ position: "absolute", top: 16, right: 16, zIndex: 20 }}>
+        <IconButton
           id="basic-button"
+          onClick={handleClick}
           aria-controls={Boolean(anchorEl) ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={Boolean(anchorEl) ? "true" : undefined}
-          onClick={handleClick}
-          sx={{ pb: 2 }}
         >
-          <AccountCircleIcon sx={{ fontSize: 32 }} />
-        </Button>
+          <AccountCircleIcon sx={{ fontSize: 36, color: "primary.main" }} />
+        </IconButton>
+
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}
+          sx={{ mt: 1 }}
         >
           {!loggedIn ? (
-            <>
+            [
               <MenuItem
+                key="login"
                 onClick={() => {
                   setShowSignupForm(false);
                   setShowLoginForm((prev) => !prev);
@@ -111,8 +114,9 @@ function App() {
                 }}
               >
                 Login
-              </MenuItem>
+              </MenuItem>,
               <MenuItem
+                key="signup"
                 onClick={() => {
                   setShowSignupForm((prev) => !prev);
                   setShowLoginForm(false);
@@ -120,8 +124,8 @@ function App() {
                 }}
               >
                 Signup
-              </MenuItem>
-            </>
+              </MenuItem>,
+            ]
           ) : (
             <MenuItem
               onClick={async () => {
@@ -134,14 +138,14 @@ function App() {
             </MenuItem>
           )}
         </Menu>
-      </div>
+      </Box>
 
-      {/* Map Component  */}
+      {/* Map Component */}
       <Map
         initialViewState={{
-          longitude: 77.216721, //Initial Longitude
-          latitude: 28.6448, //Initial Latitude
-          zoom: 5, //Initial Zoom
+          longitude: 77.216721,
+          latitude: 28.6448,
+          zoom: 5,
         }}
         mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${
           import.meta.env.VITE_MAPTILER_API_KEY
@@ -149,10 +153,11 @@ function App() {
         doubleClickZoom={false}
         onDblClick={showAddMarkerPopup}
       >
-        {/* Geocoding Control */}
-        <GeocoderControl position="top-left" />
-
-        {/* Geolocate Control */}
+        <GeocoderControl
+          position="top-left"
+          marker={false}
+          placeholder="Search for a place"
+        />
         <GeolocateControl
           position="bottom-right"
           positionOptions={{
@@ -161,45 +166,30 @@ function App() {
           }}
           showAccuracyCircle={false}
         />
-
-        {/* Navigation Controls  */}
         <NavigationControl position="bottom-right" showCompass={false} />
 
-        {/* Showing all logEntries */}
+        {/* Markers + Popups */}
         {logEntries.map((entry) => (
           <Box key={entry._id}>
-            {/* Marker  */}
             <Marker
               longitude={entry.longitude}
               latitude={entry.latitude}
               anchor="bottom"
-              onClick={() => {
-                setShowPopup({
-                  [entry._id]: true,
-                });
-              }}
+              onClick={() => setShowPopup({ [entry._id]: true })}
             >
               <RoomIcon
-                style={{
-                  color: "red",
-                  height: "60px",
-                  width: "60px",
-                  cursor: "pointer",
-                }}
+                sx={{ color: "error.main", fontSize: 48, cursor: "pointer" }}
               />
             </Marker>
-            {/* Popup */}
             {showPopup[entry._id] && (
               <Popup
                 latitude={entry.latitude}
                 longitude={entry.longitude}
                 anchor="bottom"
-                closeButton={true}
+                closeButton
                 closeOnClick={false}
-                dynamicPosition={true}
-                onClose={() => {
-                  setShowPopup({});
-                }}
+                dynamicPosition
+                onClose={() => setShowPopup({})}
               >
                 <StyledPopup
                   entry={entry}
@@ -211,7 +201,7 @@ function App() {
           </Box>
         ))}
 
-        {/* Add Entry Popup  */}
+        {/* Add Entry Popup */}
         {Number.isFinite(addEntryLocation?.latitude) &&
           Number.isFinite(addEntryLocation?.longitude) && (
             <Box>
@@ -219,20 +209,13 @@ function App() {
                 latitude={addEntryLocation.latitude}
                 longitude={addEntryLocation.longitude}
               >
-                <RoomIcon
-                  style={{
-                    color: "red",
-                    height: "60px",
-                    width: "60px",
-                    cursor: "pointer",
-                  }}
-                />
+                <RoomIcon sx={{ color: "error.main", fontSize: 48 }} />
               </Marker>
               <Popup
                 latitude={addEntryLocation.latitude}
                 longitude={addEntryLocation.longitude}
                 anchor="bottom"
-                closeButton={true}
+                closeButton
                 closeOnClick={false}
                 onClose={() => setAddEntryLocation(null)}
               >
@@ -248,7 +231,7 @@ function App() {
             </Box>
           )}
 
-        {/* Edit Entry Popup  */}
+        {/* Edit Entry Popup */}
         {Number.isFinite(editEntry?.latitude) &&
           Number.isFinite(editEntry?.longitude) && (
             <Box>
@@ -256,24 +239,15 @@ function App() {
                 latitude={editEntry.latitude}
                 longitude={editEntry.longitude}
               >
-                <RoomIcon
-                  style={{
-                    color: "red",
-                    height: "60px",
-                    width: "60px",
-                    cursor: "pointer",
-                  }}
-                />
+                <RoomIcon sx={{ color: "error.main", fontSize: 48 }} />
               </Marker>
               <Popup
                 latitude={editEntry.latitude}
                 longitude={editEntry.longitude}
                 anchor="bottom"
-                closeButton={true}
+                closeButton
                 closeOnClick={false}
-                onClose={() => {
-                  setEditEntry(null);
-                }}
+                onClose={() => setEditEntry(null)}
               >
                 <LogEditForm
                   entry={editEntry}
@@ -287,83 +261,55 @@ function App() {
           )}
       </Map>
 
-      {/* Login Form  */}
-      {showLoginForm && (
+      {/* Login & Signup Forms */}
+      {(showLoginForm || showSignupForm) && (
         <Box
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            padding: 2,
-            borderRadius: 2,
-            boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+            zIndex: 30,
+            bgcolor: "white",
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            boxShadow: 5,
+            width: { xs: "90%", sm: "auto" },
+            maxWidth: 400,
+            minWidth: { sm: 350 },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              color="primary"
-              sx={{ fontWeight: "bold" }}
-              gutterBottom
-            >
-              Login
-            </Typography>
-          </Box>
-          <LoginForm
-            onClose={() => {
+          <IconButton
+            aria-label="close"
+            onClick={() => {
               setShowLoginForm(false);
-              setLoggedIn(true);
+              setShowSignupForm(false);
             }}
-          />
-        </Box>
-      )}
-
-      {/* Signup Form  */}
-      {showSignupForm && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(255,255,255,0.95)",
-            padding: 2,
-            borderRadius: 2,
-            boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            sx={{ position: "absolute", top: 8, right: 8 }}
           >
-            <Typography
-              variant="h5"
-              color="primary"
-              sx={{ fontWeight: "bold" }}
-              gutterBottom
-            >
-              SignUp
+            <CloseIcon />
+          </IconButton>
+
+          <Box sx={{ textAlign: "center", mb: 2 }}>
+            <Typography variant="h5" color="primary" fontWeight="bold">
+              {showLoginForm ? "Login" : "Sign Up"}
             </Typography>
           </Box>
-          <SignupForm
-            onClose={() => {
-              setShowSignupForm(false);
-              setLoggedIn(true);
-            }}
-          />
+          {showLoginForm ? (
+            <LoginForm
+              onClose={() => {
+                setShowLoginForm(false);
+                setLoggedIn(true);
+              }}
+            />
+          ) : (
+            <SignupForm
+              onClose={() => {
+                setShowSignupForm(false);
+                setLoggedIn(true);
+              }}
+            />
+          )}
         </Box>
       )}
     </div>

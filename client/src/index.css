@@ -5,11 +5,101 @@ body {
   width: 100vw;
 }
 
+/* App.jsx GeocoderControl component styling */
+
+/* Main geocoder container */
 .maplibregl-ctrl-geocoder {
-  width: 200% !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  border-radius: 12px !important;
+  width: 400px !important;
+  background: #fff;
+  transition: box-shadow 0.2s ease-in-out, width 0.3s ease;
 }
 
+/* Input field */
+.maplibregl-ctrl-geocoder--input {
+  height: 48px !important;
+  padding-left: 44px !important;
+  border-radius: 12px !important;
+  font-size: 1rem;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Search icon inside input */
+.maplibregl-ctrl-geocoder--icon-search {
+  top: 12px !important;
+  left: 12px !important;
+  width: 22px !important;
+  height: 22px !important;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.maplibregl-ctrl-geocoder--icon-search:hover {
+  opacity: 1;
+}
+
+/* Clear button (X) */
+.maplibregl-ctrl-geocoder--button {
+  top: 12px !important;
+  right: 12px !important;
+  border-radius: 50% !important;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.maplibregl-ctrl-geocoder--button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Suggestions dropdown */
+.maplibregl-ctrl-geocoder .suggestions {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  margin-top: 6px;
+  padding: 4px 0;
+  overflow: hidden;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Individual suggestion */
+.maplibregl-ctrl-geocoder .suggestions > li > a {
+  padding: 10px 14px;
+  display: block;
+  transition: background 0.2s ease;
+  text-decoration: none;
+  color: #333;
+  border-radius: 8px;
+}
+
+/* Hover & active state */
+.maplibregl-ctrl-geocoder .suggestions > li > a:hover,
+.maplibregl-ctrl-geocoder .suggestions > li > a:focus {
+  background-color: rgba(25, 118, 210, 0.1);
+  color: #1976d2;
+}
+
+/* Title and address */
+.maplibregl-ctrl-geocoder--suggestion-title {
+  font-weight: 500;
+}
+
+.maplibregl-ctrl-geocoder--suggestion-address {
+  font-size: 0.85em;
+  color: #666;
+}
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
+  .maplibregl-ctrl-geocoder--button {
+    top: 6px !important;
+    right: 6px !important;
+  }
+
   .maplibregl-ctrl-geocoder {
     width: 75vw !important;
   }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= app %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #ffffff;
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+    p.description {
+      color: #555;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    .meta {
+      text-align: left;
+      margin-top: 1.5rem;
+    }
+    .meta p {
+      margin: 0.4rem 0;
+      font-size: 1rem;
+    }
+    .author {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .author a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #0077b6;
+      font-weight: bold;
+    }
+    .author a:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><%= app %></h1>
+    <p class="description"><%= description %></p>
+
+    <div class="meta">
+      <p><b>📦 Version:</b> <%= version %></p>
+      <p><b>⚡ Status:</b> <%= status %></p>
+    </div>
+
+    <div class="author">
+      <h3>👨‍💻 Author: <%= author.name %></h3>
+      <p>
+        <a href="<%= author.github %>" target="_blank">🐙 GitHub</a>
+        <a href="<%= author.portfolio %>" target="_blank">🌐 Portfolio</a>
+        <a href="<%= author.linkedin %>" target="_blank">💼 LinkedIn</a>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Made with ❤️ using Node.js, Express & EJS</p>
+    </div>
+  </div>
+</body>
+</html>

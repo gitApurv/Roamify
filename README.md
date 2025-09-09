@@ -6,6 +6,12 @@ Roamify is a full-stack MERN application that reimagines the travel blog. Instea
 
 ![Roamify Preview](screenshot/Roamify.png)
 
+## 🔗 Live Demo
+
+- 🌐 **Frontend**: [ShopiFyzz Client (Netlify)](https://travel-app-roamify.netlify.app)
+
+- ⚙️ **Backend API**: [ShopiFyzz Server (Render)](https://roamify-n0g2.onrender.com)
+
 ## ✨ Key Features
 
 - 🗺️ **Interactive World Map**: Built with React Map GL & MapLibre for an immersive experience.

@@ -30,9 +30,9 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname + "/views"));
 
-app.use("/", async (req, res, next) => {
+app.use("/", async (req, res) => {
   res.render("index", {
-    app: "Roamify API 🛒",
+    app: "Roamify API 🚀",
     description:
       "👉 A project that turns personal journeys into an interactive, visual storytelling experience.",
     author: {

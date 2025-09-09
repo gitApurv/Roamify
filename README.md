@@ -8,9 +8,9 @@ Roamify is a full-stack MERN application that reimagines the travel blog. Instea
 
 ## 🔗 Live Demo
 
-- 🌐 **Frontend**: [ShopiFyzz Client (Netlify)](https://travel-app-roamify.netlify.app)
+- 🌐 **Frontend**: [Roamify Client (Netlify)](https://travel-app-roamify.netlify.app)
 
-- ⚙️ **Backend API**: [ShopiFyzz Server (Render)](https://roamify-n0g2.onrender.com)
+- ⚙️ **Backend API**: [Roamify API (Render)](https://roamify-n0g2.onrender.com)
 
 ## ✨ Key Features
 

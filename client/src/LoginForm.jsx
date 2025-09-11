@@ -4,7 +4,6 @@ import {
   CircularProgress,
   InputAdornment,
   TextField,
-  Typography,
   Alert,
 } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -24,11 +23,13 @@ const LoginForm = ({ onClose }) => {
     setLoading(true);
     try {
       const response = await loginUser(data);
+      console.log(response);
       if (!response.ok) {
         throw new Error(response.message || "Invalid credentials");
       }
       onClose();
     } catch (err) {
+      console.log(err);
       setError(err.message);
     } finally {
       setLoading(false);

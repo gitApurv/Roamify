@@ -30,10 +30,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname + "/views"));
 
-app.use("/api", authRouter);
-app.use("/api", logsRouter);
-
-app.use("/", async (req, res) => {
+app.get("/", async (req, res) => {
   res.render("index", {
     app: "Roamify API 🚀",
     description:
@@ -48,6 +45,9 @@ app.use("/", async (req, res) => {
     status: "✅ Running",
   });
 });
+
+app.use("/api", authRouter);
+app.use("/api", logsRouter);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
